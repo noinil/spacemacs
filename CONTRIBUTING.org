@@ -25,18 +25,24 @@ Thanks! :heart: :heart: :heart:
  - [[#credits][Credits]]
 
 * Asking for help
+  :PROPERTIES:
+:CUSTOM_ID: asking-for-help
+:END:
 If you want to ask an usage question, be sure to look first into some places as
 it may hold the answer:
 
-- [[doc/FAQ.org][The FAQ]]. Some of the most frequently asked questions are answered there.
-- [[doc/DOCUMENTATION.org][The documentation]]. It's the general documentation of Spacemacs.
-- You may also read the =README.org= of the [[layers/][relevant layer(s)]].
+- [[file:doc/FAQ.org][The FAQ]]. Some of the most frequently asked questions are answered there.
+- [[file:doc/DOCUMENTATION.org][The documentation]]. It's the general documentation of Spacemacs.
+- You may also read the =README.org= of the [[file:layers/][relevant layer(s)]].
 
 If your question is not answered there, then please come into our [[https://gitter.im/syl20bnr/spacemacs][gitter chat]] to
 discuss it with us :relaxed:. We will direct you to a solution, or ask you to
 open an issue if it is needed.
 
 * Reporting issues
+:PROPERTIES:
+:CUSTOM_ID: reporting-issues
+:END:
 Issues have to be reported on our [[https://github.com/syl20bnr/spacemacs/issues][issues tracker]]. Please:
 
 - Check that the issue has not already been reported.
@@ -56,6 +62,9 @@ Issues have to be reported on our [[https://github.com/syl20bnr/spacemacs/issues
     step guide.
 
 * Contributing code
+:PROPERTIES:
+:CUSTOM_ID: contributing-code
+:END:
 Code contributions are welcome. Please read the following sections carefully. In
 any case, feel free to join us on the [[https://gitter.im/syl20bnr/spacemacs][gitter chat]] to ask questions about
 contributing!
@@ -67,13 +76,13 @@ The license is =GPLv3= for all parts specific to Spacemacs, this includes:
 - The initialization and core files
 - All the layer files.
 
-For files not belonging to Spacemacs like extensions and libraries, refer to the
-header file. Those files should not have an empty header, we may not accept
-code without a proper header file.
+For files not belonging to Spacemacs like local packages and libraries, refer
+to the header file. Those files should not have an empty header, we may not
+accept code without a proper header file.
 
 *** Conventions
 Spacemacs is based on conventions, mainly for naming functions, keybindings
-definition and writing documentation. Please read the [[doc/CONVENTIONS.org][CONVENTIONS.org]] file
+definition and writing documentation. Please read the [[file:doc/CONVENTIONS.org][CONVENTIONS.org]] file
 before your first contribution to get to know them.
 
 *** Pull-Request
@@ -154,13 +163,21 @@ Contributed configuration layers are stored in the =layers/= folder. The
 =layers/= folder also contains categories prefixed with =+= to put your layers
 in. For example a layer for a language would go in the =layers/+lang/= folder.
 
+Layer with no associated configuration will be rejected. For instance a layer
+with just a package and a hook can be easily replaced by the usage of the
+variable =dotspacemacs-additional-packages=.
+
 *** File header
 The file header for =elisp= files should look like the following template:
 
 #+BEGIN_EXAMPLE
-    ;;; FILENAME --- NAME Layer extensions File for Spacemacs
+    ;;; FILENAME --- NAME Layer packages File for Spacemacs
     ;;
+<<<<<<< HEAD
     ;; Copyright (c) 2012-2016 Sylvain Benner & Contributors
+=======
+    ;; Copyright (c) 2012-2017 Sylvain Benner & Contributors
+>>>>>>> upstream/master
     ;;
     ;; Author: YOUR_NAME <YOUR_EMAIL>
     ;; URL: https://github.com/syl20bnr/spacemacs
@@ -194,7 +211,7 @@ can be done from the =dotspacemacs/user-config= function of your =.spacemacs=
 file and don't require any contribution to Spacemacs.
 
 If you think it worth contributing a new key bindings then be sure to read
-the [[doc/CONVENTIONS.org][CONVENTIONS.org]] file to find the best key bindings, then create a
+the [[file:doc/CONVENTIONS.org][CONVENTIONS.org]] file to find the best key bindings, then create a
 Pull-Request with your changes.
 
 *ALWAYS* document your new keybindings or keybindings changes inside the

@@ -1,6 +1,10 @@
 ;;; packages.el --- Asciidoc Layer packages File for Spacemacs
 ;;
+<<<<<<< HEAD
 ;; Copyright (c) 2012-2016 Sylvain Benner & Contributors
+=======
+;; Copyright (c) 2012-2017 Sylvain Benner & Contributors
+>>>>>>> upstream/master
 ;;
 ;; Author: Mark Safronov <hijarian@gmail.com>
 ;; Author: Torben Hoffmann <torben.lehoff@gmail.com>
@@ -16,7 +20,7 @@
   (use-package adoc-mode
     ;; We will NOT default `.txt' files to AsciiDoc mode,
     ;; and `.asciidoc' extension is just plain stupid.
-    :mode (("\\.adoc?$" . adoc-mode))
+    :mode (("\\.adoc?\\'" . adoc-mode))
 		:defer t
     :config
     (progn
@@ -39,8 +43,8 @@
         "xb" 'tempo-template-adoc-strong
         "xi" 'tempo-template-adoc-emphasis)
       ;; yes, exactly like that. To "promote" title is to INCREASE its size.
-      ;; `adoc-denote' does the opposite: increases its LEVEL,
+      ;; `adoc-demote' does the opposite: increases its LEVEL,
       ;; which DECREASES its size.
-      (define-key adoc-mode-map (kbd "M-h") 'adoc-denote)
-      ;; see the comment about  adoc-denote above
+      (define-key adoc-mode-map (kbd "M-h") 'adoc-demote)
+      ;; see the comment about  adoc-demote above
       (define-key adoc-mode-map (kbd "M-l") 'adoc-promote))))

@@ -1,6 +1,10 @@
 ;;; config.el --- mu4e Layer configuration File for Spacemacs
 ;;
+<<<<<<< HEAD
 ;; Copyright (c) 2012-2016 Sylvain Benner & Contributors
+=======
+;; Copyright (c) 2012-2017 Sylvain Benner & Contributors
+>>>>>>> upstream/master
 ;;
 ;; Author: Sylvain Benner <sylvain.benner@gmail.com>
 ;; URL: https://github.com/syl20bnr/spacemacs
@@ -14,6 +18,12 @@
 
 (defvar mu4e-account-alist nil
   "Account alist for custom multi-account compose.")
+
+(defvar mu4e-enable-notifications nil
+  "If non-nil, enable desktop notifications for unread emails.")
+
+(defvar mu4e-enable-mode-line nil
+  "If non-nil, enable display of unread emails in mode-line.")
 
 (when mu4e-installation-path
   (push mu4e-installation-path load-path))

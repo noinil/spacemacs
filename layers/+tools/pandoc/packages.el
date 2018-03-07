@@ -1,6 +1,10 @@
 ;;; packages.el --- pandoc Layer packages File for Spacemacs
 ;;
+<<<<<<< HEAD
 ;; Copyright (c) 2012-2016 Sylvain Benner & Contributors
+=======
+;; Copyright (c) 2012-2017 Sylvain Benner & Contributors
+>>>>>>> upstream/master
 ;;
 ;; Author: Christoph Paulik <cpaulik@gmail.com>
 ;; URL: https://github.com/syl20bnr/spacemacs
@@ -21,15 +25,10 @@
     :commands spacemacs/run-pandoc
     :config
     (progn
-      (defun spacemacs/run-pandoc ()
-        "Start pandoc for the buffer and open the menu"
-        (interactive)
-        (pandoc-mode)
-        (pandoc-main-hydra/body))
+      (setq pandoc-data-dir (concat spacemacs-cache-directory "pandoc/"))
       (add-hook 'pandoc-mode-hook 'pandoc-load-default-settings))
     :init
-    (progn
-      (spacemacs/set-leader-keys "P/" 'spacemacs/run-pandoc))))
+    (spacemacs/set-leader-keys "P/" 'spacemacs/run-pandoc)))
 
 (defun pandoc/init-ox-pandoc ()
   (use-package ox-pandoc

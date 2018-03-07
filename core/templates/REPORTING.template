@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <PLEASE REPLACE ALL UPPERCASE EXPRESSIONS AND DELETE THIS LINE>
 #### Description
 DESCRIPTION OF THE PROBLEM
@@ -17,6 +18,26 @@ DESCRIPTION OF THE EXPECTED BEHAVIOUR
 %SYSTEM_INFO%
 
 #### Backtrace
+=======
+<<REPLACE ALL UPPERCASE EXPRESSIONS AND DELETE THIS LINE, `C-c C-c` TO SUBMIT>>
+#### Description :octocat:
+<<DESCRIPTION OF THE PROBLEM>>
+
+#### Reproduction guide :beetle:
+- Start Emacs
+- <<REPRODUCTION STEPS>>
+
+*Observed behaviour:* :eyes: :broken_heart:
+<<DESCRIPTION OF THE OBSERVED BEHAVIOUR>>
+
+*Expected behaviour:* :heart: :smile:
+<<DESCRIPTION OF THE EXPECTED BEHAVIOUR>>
+
+(%LAST_KEYS%)
+%SYSTEM_INFO%
+
+#### Backtrace :paw_prints:
+>>>>>>> upstream/master
 ```
 %BACKTRACE%
 ```

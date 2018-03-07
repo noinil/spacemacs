@@ -1,6 +1,10 @@
 ;;; packages.el --- Scala Layer packages File for Spacemacs
 ;;
+<<<<<<< HEAD
 ;; Copyright (c) 2012-2016 Sylvain Benner & Contributors
+=======
+;; Copyright (c) 2012-2017 Sylvain Benner & Contributors
+>>>>>>> upstream/master
 ;;
 ;; Author: Sylvain Benner <sylvain.benner@gmail.com>
 ;; URL: https://github.com/syl20bnr/spacemacs
@@ -12,24 +16,33 @@
 (setq scala-packages
   '(
     ensime
+    flycheck
+    ggtags
+    helm-gtags
     noflet
+    org
+    scala-mode
     sbt-mode
-    scala-mode2
     ))
 
 (defun scala/init-ensime ()
   (use-package ensime
-    :commands (ensime-mode)
+    :defer t
     :init
+    ;; note ensime-mode is hooked to scala-mode-hook automatically by
+    ;; ensime-mode via an autoload
     (progn
+      (spacemacs/register-repl 'ensime 'ensime-inf-switch "ensime")
       (when scala-enable-eldoc
         (add-hook 'ensime-mode-hook 'scala/enable-eldoc))
       (add-hook 'scala-mode-hook 'scala/configure-flyspell)
       (add-hook 'scala-mode-hook 'scala/configure-ensime)
-      (add-hook 'scala-mode-hook 'scala/maybe-start-ensime))
+      (when scala-auto-start-ensime
+        (add-hook 'scala-mode-hook 'scala/maybe-start-ensime))
+      (add-to-list 'spacemacs-jump-handlers-scala-mode 'ensime-edit-definition))
     :config
     (progn
-      (setq user-emacs-ensime-directory ".cache/ensime")
+      (setq ensime-startup-dirname (expand-file-name "ensime" spacemacs-cache-directory))
 
       (evil-define-key 'insert ensime-mode-map
         (kbd ".") 'scala/completing-dot
@@ -64,7 +77,7 @@
         "Regenerate `.ensime' file and restart the ensime server."
         (interactive)
         (progn
-          (sbt-command "gen-ensime")
+          (sbt-command ";ensimeConfig;ensimeConfigProject")
           (ensime-shutdown)
           (ensime)))
 
@@ -92,11 +105,13 @@
                         ("mn" . "scala/ensime")
                         ("mr" . "scala/refactor")
                         ("mt" . "scala/test")
-                        ("ms" . "scala/repl")))
+                        ("ms" . "scala/repl")
+                        ("my" . "scala/yank")))
         (spacemacs/declare-prefix-for-mode 'scala-mode (car prefix) (cdr prefix)))
 
       (spacemacs/set-leader-keys-for-major-mode 'scala-mode
-        "/"     'ensime-search
+        "/"      'ensime-search
+        "'"      'ensime-inf-switch
 
         "bc"     'ensime-sbt-do-compile
         "bC"     'ensime-sbt-do-clean
@@ -104,7 +119,7 @@
         "bp"     'ensime-sbt-do-package
         "br"     'ensime-sbt-do-run
 
-        "ct"     'ensime-typecheck-current-file
+        "ct"     'ensime-typecheck-current-buffer
         "cT"     'ensime-typecheck-all
 
         "dA"     'ensime-db-attach
@@ -112,28 +127,26 @@
         "dB"     'ensime-db-clear-break
         "dC"     'ensime-db-clear-all-breaks
         "dc"     'ensime-db-continue
-        "dd"     'ensime-db-start
-        "di"     'ensime-db-inspect-value-at-point
-        "dl"     'ensime-db-list-locals
+        "di"     'ensime-db-step
         "dn"     'ensime-db-next
         "do"     'ensime-db-step-out
         "dq"     'ensime-db-quit
         "dr"     'ensime-db-run
-        "ds"     'ensime-db-step
         "dt"     'ensime-db-backtrace
+        "dv"     'ensime-db-inspect-value-at-point
 
         "ee"     'ensime-print-errors-at-point
         "el"     'ensime-show-all-errors-and-warnings
         "es"     'ensime-stacktrace-switch
 
-        "gg"     'ensime-edit-definition
         "gp"     'ensime-pop-find-definition-stack
         "gi"     'ensime-goto-impl
         "gt"     'ensime-goto-test
 
         "hh"     'ensime-show-doc-for-symbol-at-point
+        "hT"     'ensime-type-at-point-full-name
+        "ht"     'ensime-type-at-point
         "hu"     'ensime-show-uses-of-symbol-at-point
-        "ht"     'ensime-print-type-at-point
 
         "ii"     'ensime-inspect-type-at-point
         "iI"     'ensime-inspect-type-at-point-other-frame
@@ -143,6 +156,10 @@
         "ns"     'ensime
         "nS"     'ensime-gen-and-restart
 
+<<<<<<< HEAD
+=======
+        "ra"     'ensime-refactor-add-type-annotation
+>>>>>>> upstream/master
         "rd"     'ensime-refactor-diff-inline-local
         "rD"     'ensime-undo-peek
         "rf"     'ensime-format-source
@@ -163,6 +180,9 @@
         "sr"     'ensime-inf-eval-region
         "sR"     'ensime-inf-eval-region-switch
 
+        "yT"     'scala/yank-type-at-point-full-name
+        "yt"     'scala/yank-type-at-point
+
         "z"      'ensime-expand-selection-command
         )
 
@@ -179,22 +199,30 @@
       (when (configuration-layer/package-usedp 'expand-region)
         (require 'ensime-expand-region nil 'noerror)))))
 
+(defun scala/post-init-flycheck ()
+  (spacemacs/add-flycheck-hook 'scala-mode))
+
 (defun scala/init-noflet ()
   (use-package noflet))
 
+(defun scala/pre-init-org ()
+  (spacemacs|use-package-add-hook org
+    :post-config (add-to-list 'org-babel-load-languages '(scala . t))))
+
 (defun scala/init-sbt-mode ()
   (use-package sbt-mode
-    :config
-    (progn
-      (spacemacs/set-leader-keys-for-major-mode 'scala-mode
-        "bb" 'sbt-command))))
+    :defer t
+    :init (spacemacs/set-leader-keys-for-major-mode 'scala-mode
+            "b." 'sbt-hydra
+            "bb" 'sbt-command)))
 
-(defun scala/init-scala-mode2 ()
-  (use-package scala-mode2
+(defun scala/init-scala-mode ()
+  (use-package scala-mode
     :defer t
     :init
-    (dolist (ext '(".cfe" ".cfs" ".si" ".gen" ".lock"))
-      (add-to-list 'completion-ignored-extensions ext))
+    (progn
+      (dolist (ext '(".cfe" ".cfs" ".si" ".gen" ".lock"))
+        (add-to-list 'completion-ignored-extensions ext)))
     :config
     (progn
       ;; Automatically insert asterisk in a comment when enabled
@@ -207,9 +235,54 @@
       (evil-define-key 'insert scala-mode-map
         (kbd "RET") 'scala/newline-and-indent-with-asterisk)
 
+      ;; Automatically replace arrows with unicode ones when enabled
+      (defconst scala-unicode-arrows-alist
+        '(("=>" . "⇒")
+          ("->" . "→")
+          ("<-" . "←")))
+
+      (defun scala/replace-arrow-at-point ()
+        "Replace the arrow before the point (if any) with unicode ones.
+An undo boundary is inserted before doing the replacement so that
+it can be undone."
+        (let* ((end (point))
+               (start (max (- end 2) (point-min)))
+               (x (buffer-substring start end))
+               (arrow (assoc x scala-unicode-arrows-alist)))
+          (when arrow
+            (undo-boundary)
+            (backward-delete-char 2)
+            (insert (cdr arrow)))))
+
+      (defun scala/gt ()
+        "Insert a `>' to the buffer. If it's part of a right arrow (`->' or `=>'),
+replace it with the corresponding unicode arrow."
+        (interactive)
+        (insert ">")
+        (scala/replace-arrow-at-point))
+
+      (defun scala/hyphen ()
+        "Insert a `-' to the buffer. If it's part of a left arrow (`<-'),
+replace it with the unicode arrow."
+        (interactive)
+        (insert "-")
+        (scala/replace-arrow-at-point))
+
+      (when scala-use-unicode-arrows
+        (define-key scala-mode-map
+          (kbd ">") 'scala/gt)
+        (define-key scala-mode-map
+          (kbd "-") 'scala/hyphen))
+
       (evil-define-key 'normal scala-mode-map "J" 'spacemacs/scala-join-line)
 
       ;; Compatibility with `aggressive-indent'
       (setq scala-indent:align-forms t
             scala-indent:align-parameters t
             scala-indent:default-run-on-strategy scala-indent:operator-strategy))))
+
+(defun scala/post-init-ggtags ()
+  (add-hook 'scala-mode-local-vars-hook #'spacemacs/ggtags-mode-enable))
+
+(defun scala/post-init-helm-gtags ()
+  (spacemacs/helm-gtags-define-keys-for-mode 'scala-mode))

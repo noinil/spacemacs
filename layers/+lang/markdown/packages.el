@@ -1,6 +1,10 @@
 ;;; packages.el --- Markdown Layer packages File for Spacemacs
 ;;
+<<<<<<< HEAD
 ;; Copyright (c) 2012-2016 Sylvain Benner & Contributors
+=======
+;; Copyright (c) 2012-2017 Sylvain Benner & Contributors
+>>>>>>> upstream/master
 ;;
 ;; Author: Sylvain Benner <sylvain.benner@gmail.com>
 ;; URL: https://github.com/syl20bnr/spacemacs
@@ -11,15 +15,23 @@
 
 (setq markdown-packages
   '(
+    company
+    company-emoji
     emoji-cheat-sheet-plus
     gh-md
     markdown-mode
     markdown-toc
     mmm-mode
-    company
-    company-emoji
     smartparens
+    (vmd-mode :toggle (eq 'vmd markdown-live-preview-engine))
     ))
+
+(defun markdown/post-init-company ()
+  (spacemacs|add-company-hook markdown-mode)
+  (push 'company-capf company-backends-markdown-mode))
+
+(defun markdown/post-init-company-emoji ()
+  (push 'company-emoji company-backends-markdown-mode))
 
 (defun markdown/post-init-emoji-cheat-sheet-plus ()
   (add-hook 'markdown-mode-hook 'emoji-cheat-sheet-plus-display-mode))
@@ -40,6 +52,17 @@
     :defer t
     :config
     (progn
+      ;; stolen from http://stackoverflow.com/a/26297700
+      ;; makes markdown tables saner via orgtbl-mode
+      (require 'org-table)
+      (defun cleanup-org-tables ()
+        (save-excursion
+          (goto-char (point-min))
+          (while (search-forward "-+-" nil t) (replace-match "-|-"))))
+      (add-hook 'markdown-mode-hook 'orgtbl-mode)
+      (add-hook 'markdown-mode-hook
+                (lambda()
+                  (add-hook 'after-save-hook 'cleanup-org-tables  nil 'make-it-local)))
       ;; Insert key for org-mode and markdown a la C-h k
       ;; from SE endless http://emacs.stackexchange.com/questions/2206/i-want-to-have-the-kbd-tags-for-my-blog-written-in-org-mode/2208#2208
       (defun spacemacs/insert-keybinding-markdown (key)
@@ -119,7 +142,9 @@ Will work on both org-mode and any mode that accepts plain html."
         "f"   'markdown-follow-thing-at-point
         "P"   'markdown-previous-link
         "<RET>" 'markdown-jump)
-
+      (when (eq 'eww markdown-live-preview-engine)
+        (spacemacs/set-leader-keys-for-major-mode 'markdown-mode
+          "cP"  'markdown-live-preview-mode))
       ;; Header navigation in normal state movements
       (evil-define-key 'normal markdown-mode-map
         "gj" 'outline-forward-same-level
@@ -127,7 +152,6 @@ Will work on both org-mode and any mode that accepts plain html."
         "gh" 'outline-up-heading
         ;; next visible heading is not exactly what we want but close enough
         "gl" 'outline-next-visible-heading)
-
       ;; Promotion, Demotion
       (define-key markdown-mode-map (kbd "M-h") 'markdown-promote)
       (define-key markdown-mode-map (kbd "M-j") 'markdown-move-down)
@@ -136,17 +160,22 @@ Will work on both org-mode and any mode that accepts plain html."
 
 (defun markdown/init-markdown-toc ()
   (use-package markdown-toc
-    :defer t))
+    :defer t
+    :init (spacemacs/set-leader-keys-for-major-mode 'markdown-mode
+            "it"  'markdown-toc-generate-toc)))
 
 (defun markdown/init-mmm-mode ()
   (use-package mmm-mode
-    :commands mmm-parse-buffer
-    :init
-    (spacemacs/set-leader-keys-for-major-mode 'markdown-mode
-      ;; Highlight code blocks
-      "cs"   'mmm-parse-buffer)
+    :commands mmm-mode
+    :init (add-hook 'markdown-mode-hook 'spacemacs/activate-mmm-mode)
     :config
     (progn
+      (spacemacs|hide-lighter mmm-mode)
+      (mmm-add-classes '((markdown-ini
+                          :submode conf-unix-mode
+                          :face mmm-declaration-submode-face
+                          :front "^```ini[\n\r]+"
+                          :back "^```$")))
       (mmm-add-classes '((markdown-python
                           :submode python-mode
                           :face mmm-declaration-submode-face
@@ -197,7 +226,10 @@ Will work on both org-mode and any mode that accepts plain html."
                           :face mmm-declaration-submode-face
                           :front "^```rust[\n\r]+"
                           :back "^```$")))
+<<<<<<< HEAD
       (setq mmm-global-mode t)
+=======
+>>>>>>> upstream/master
       (mmm-add-mode-ext-class 'markdown-mode nil 'markdown-python)
       (mmm-add-mode-ext-class 'markdown-mode nil 'markdown-java)
       (mmm-add-mode-ext-class 'markdown-mode nil 'markdown-ruby)
@@ -207,11 +239,15 @@ Will work on both org-mode and any mode that accepts plain html."
       (mmm-add-mode-ext-class 'markdown-mode nil 'markdown-html)
       (mmm-add-mode-ext-class 'markdown-mode nil 'markdown-javascript)
       (mmm-add-mode-ext-class 'markdown-mode nil 'markdown-ess)
+<<<<<<< HEAD
       (mmm-add-mode-ext-class 'markdown-mode nil 'markdown-rust))))
+=======
+      (mmm-add-mode-ext-class 'markdown-mode nil 'markdown-rust)
+      (mmm-add-mode-ext-class 'markdown-mode nil 'markdown-ini))))
+>>>>>>> upstream/master
 
-(when (configuration-layer/layer-usedp 'auto-completion)
-  (defun markdown/post-init-company ()
-    (spacemacs|add-company-hook markdown-mode)
-    (push 'company-capf company-backends-markdown-mode))
-  (defun markdown/post-init-company-emoji ()
-    (push 'company-emoji company-backends-markdown-mode)))
+(defun markdown/init-vmd-mode ()
+  (use-package vmd-mode
+    :defer t
+    :init (spacemacs/set-leader-keys-for-major-mode 'markdown-mode
+            "cP" 'vmd-mode)))
