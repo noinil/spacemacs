@@ -24,7 +24,7 @@
 (defconst spacemacs-emacs-min-version   "24.3" "Minimal version of Emacs.")
 =======
 
-(defconst spacemacs-version         "0.200.13" "Spacemacs version.")
+(defconst spacemacs-version         "0.200.14" "Spacemacs version.")
 (defconst spacemacs-emacs-min-version   "24.4" "Minimal version of Emacs.")
 >>>>>>> upstream/master
 
